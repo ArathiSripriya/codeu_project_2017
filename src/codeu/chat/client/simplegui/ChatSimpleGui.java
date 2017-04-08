@@ -19,6 +19,7 @@ import javax.swing.*;
 import javax.swing.border.Border;
 
 import codeu.chat.client.ClientContext;
+import codeu.chat.client.ClientUser;
 import codeu.chat.client.Controller;
 import codeu.chat.client.View;
 import codeu.chat.util.Logger;
@@ -31,10 +32,12 @@ public final class ChatSimpleGui {
   private JFrame mainFrame;
 
   private final ClientContext clientContext;
+  private final ClientUser clientUser;
 
   // Constructor - sets up the Chat Application
   public ChatSimpleGui(Controller controller, View view) {
     clientContext = new ClientContext(controller, view);
+    clientUser = new ClientUser(controller, view);
   }
 
   // Run the GUI client
@@ -72,7 +75,7 @@ public final class ChatSimpleGui {
     mainViewPanel.setBorder(paneBorder());
 
     // Build main panels - Users, Conversations, Messages.
-    final JPanel usersViewPanel = new UserPanel(clientContext);
+    final JPanel usersViewPanel = new UserPanel(clientContext, clientUser);
     usersViewPanel.setBorder(paneBorder());
     final GridBagConstraints usersViewC = new GridBagConstraints();
 

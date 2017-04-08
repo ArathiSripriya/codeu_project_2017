@@ -1,6 +1,6 @@
 // Copyright 2017 Google Inc.
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
+// Licensed :under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -65,13 +65,14 @@ public final class ClientUser {
     return current;
   }
 
-  public boolean signInUser(String name) {
+  public boolean signInUser(String name, String password) {
     updateUsers();
 
     final User prev = current;
     if (name != null) {
       final User newCurrent = usersByName.first(name);
-      if (newCurrent != null) {
+
+      if ((newCurrent != null) && (password.equals(newCurrent.password))) {
         current = newCurrent;
       }
     }
@@ -88,16 +89,20 @@ public final class ClientUser {
     printUser(current);
   }
 
-  public void addUser(String name) {
-    final boolean validInputs = isValidName(name);
+  public void addUser(String name, String password) {
+    
+    final boolean validInputsName = isValidName(name);
+    final boolean validInputsPass = isValidName(password);
+    //TODO: Write isValidPassword(String password); method
+    //validInputs = isValidPassword(password);
 
-    final User user = (validInputs) ? controller.newUser(name) : null;
+    final User user = (validInputsName && validInputsPass) ? controller.newUser(name, password) : null;
 
     if (user == null) {
       System.out.format("Error: user not created - %s.\n",
-          (validInputs) ? "server failure" : "bad input value");
+          (validInputsName && validInputsPass) ? "server failure" : "bad input value");
     } else {
-      LOG.info("New user complete, Name= \"%s\" UUID=%s", user.name, user.id);
+      LOG.info("New user complete, Name= \"%s\" UUID=%s Password= \"%s\"", user.name, user.id, user.password);
       updateUsers();
     }
   }
@@ -108,6 +113,18 @@ public final class ClientUser {
       printUser(u);
     }
   }
+
+  public User searchByName(String s) {
+    updateUsers();
+    for (final User u : usersByName.all()) {
+      if (s.equals(u.name)){
+	return u; 
+    }
+   }
+	return null;
+ }
+
+
 
   public User lookup(Uuid id) {
     return (usersById.containsKey(id)) ? usersById.get(id) : null;

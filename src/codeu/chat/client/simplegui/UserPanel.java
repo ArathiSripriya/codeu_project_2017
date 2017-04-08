@@ -23,6 +23,7 @@ import javax.swing.event.ListSelectionListener;
 
 import codeu.chat.client.ClientContext;
 import codeu.chat.common.User;
+import codeu.chat.client.ClientUser;
 
 // NOTE: JPanel is serializable, but there is no need to serialize UserPanel
 // without the @SuppressWarnings, the compiler will complain of no override for serialVersionUID
@@ -30,10 +31,12 @@ import codeu.chat.common.User;
 public final class UserPanel extends JPanel {
 
   private final ClientContext clientContext;
+  private final ClientUser clientUser;
 
-  public UserPanel(ClientContext clientContext) {
+  public UserPanel(ClientContext clientContext, ClientUser clientUser) {
     super(new GridBagLayout());
     this.clientContext = clientContext;
+    this.clientUser = clientUser;
     initialize();
   }
 
@@ -144,18 +147,61 @@ public final class UserPanel extends JPanel {
       public void actionPerformed(ActionEvent e) {
         UserPanel.this.getAllUsers(listModel);
       }
+    });   
+
+     userSignInButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        final String s = (String) JOptionPane.showInputDialog(
+            UserPanel.this, "Enter user name:", "Continue", JOptionPane.PLAIN_MESSAGE,
+            null, null, "");
+
+	final User u = clientUser.searchByName(s);
+	if(u == null){
+	  userSignedInLabel.setText("Unrecognized User");
+	}
+
+	final String p = (String) JOptionPane.showInputDialog(
+            UserPanel.this, "Enter Password:", "Sign-In", JOptionPane.PLAIN_MESSAGE,
+            null, null, "");
+
+	if(p.equals(u.password)){
+		clientContext.user.signInUser(s,p);
+		userSignedInLabel.setText("Hello " + s);
+	}else{
+	  userSignedInLabel.setText("Unrecognized Password");
+	}
+      }
     });
 
-    userSignInButton.addActionListener(new ActionListener() {
+
+
+    /*userSignInButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         if (userList.getSelectedIndex() != -1) {
-          final String data = userList.getSelectedValue();
-          clientContext.user.signInUser(data);
-          userSignedInLabel.setText("Hello " + data);
+          final String username = userList.getSelectedValue();
+          	clientContext.user.signInUser(username, username);
+         	userSignedInLabel.setText("Hello " + username);
+          }	
         }
-      }
-    });
+      });
+	
+
+	//now get the password
+	  userSignInButton.addActionListener(new ActionListener() {
+	    @Override
+	    public void actionPerformed(Action Event e) {
+		if(passwordList.getSelectedIndex() != -1) {
+		final String password = passwordList.getSelectedValue();
+		//sign-in credentials recieved		
+          	clientContext.user.signInUser(username, password);
+         	userSignedInLabel.setText("Hello " + data);
+        	}
+              }
+    	    }); */
+
+
 
     userAddButton.addActionListener(new ActionListener() {
       @Override
@@ -163,8 +209,13 @@ public final class UserPanel extends JPanel {
         final String s = (String) JOptionPane.showInputDialog(
             UserPanel.this, "Enter user name:", "Add User", JOptionPane.PLAIN_MESSAGE,
             null, null, "");
-        if (s != null && s.length() > 0) {
-          clientContext.user.addUser(s);
+
+	final String p = (String) JOptionPane.showInputDialog(
+            UserPanel.this, "Enter Password:", "Add Password", JOptionPane.PLAIN_MESSAGE,
+            null, null, "");
+
+        if ((s != null && s.length() > 0) && (p != null && p.length() > 0)) {
+          clientContext.user.addUser(s, p);
           UserPanel.this.getAllUsers(listModel);
         }
       }
