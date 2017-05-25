@@ -24,6 +24,8 @@ import javax.swing.event.ListSelectionListener;
 import codeu.chat.client.ClientContext;
 import codeu.chat.common.User;
 import codeu.chat.client.ClientUser;
+import codeu.chat.client.LoginDialog;
+import codeu.chat.client.Login;
 
 // NOTE: JPanel is serializable, but there is no need to serialize UserPanel
 // without the @SuppressWarnings, the compiler will complain of no override for serialVersionUID
@@ -32,11 +34,13 @@ public final class UserPanel extends JPanel {
 
   private final ClientContext clientContext;
   private final ClientUser clientUser;
+  private final LoginDialog loginDialog;
 
-  public UserPanel(ClientContext clientContext, ClientUser clientUser) {
+  public UserPanel(ClientContext clientContext, ClientUser clientUser, LoginDialog loginDialog) {
     super(new GridBagLayout());
     this.clientContext = clientContext;
     this.clientUser = clientUser;
+    this.loginDialog = loginDialog;
     initialize();
   }
 
@@ -152,25 +156,39 @@ public final class UserPanel extends JPanel {
      userSignInButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        final String s = (String) JOptionPane.showInputDialog(
+       /* final String s = (String) JOptionPane.showInputDialog(
             UserPanel.this, "Enter user name:", "Continue", JOptionPane.PLAIN_MESSAGE,
             null, null, "");
-
-	final User u = clientUser.searchByName(s);
-	if(u == null){
-	  userSignedInLabel.setText("Unrecognized User");
-	}
 
 	final String p = (String) JOptionPane.showInputDialog(
             UserPanel.this, "Enter Password:", "Sign-In", JOptionPane.PLAIN_MESSAGE,
             null, null, "");
+*/
+	Login login = new Login(clientUser);
+	loginDialog.setVisible(true);
 
-	if(p.equals(u.password)){
-		clientContext.user.signInUser(s,p);
-		userSignedInLabel.setText("Hello " + s);
+        final String s = loginDialog.getUsername();
+	final String p = loginDialog.getPassword();
+
+	//System.out.println("Input Username is " + s);
+	//System.out.println("Input Password is " + p);
+
+	final User u = clientUser.searchByName(s);
+
+	//System.out.println("Real user is " + u.name);
+	//System.out.println("Real pass is " + u.password);
+
+	if(u != null){
+	    //Login login = new Login(u);
+	    //loginDialog.setVisible(true);
+	
+	  if((p.equals(u.password))){
+	      clientContext.user.signInUser(s,p);
+	      userSignedInLabel.setText("Hello " + s);
+	  }
 	}else{
-	  userSignedInLabel.setText("Unrecognized Password");
-	}
+	  userSignedInLabel.setText("Unrecognized user/pass");
+	} 
       }
     });
 

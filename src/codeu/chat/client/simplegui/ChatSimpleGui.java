@@ -22,6 +22,7 @@ import codeu.chat.client.ClientContext;
 import codeu.chat.client.ClientUser;
 import codeu.chat.client.Controller;
 import codeu.chat.client.View;
+import codeu.chat.client.LoginDialog;
 import codeu.chat.util.Logger;
 
 // Chat - top-level client application - Java Simple GUI (using Java Swing)
@@ -33,11 +34,14 @@ public final class ChatSimpleGui {
 
   private final ClientContext clientContext;
   private final ClientUser clientUser;
+  private final LoginDialog loginDialog;
 
   // Constructor - sets up the Chat Application
   public ChatSimpleGui(Controller controller, View view) {
     clientContext = new ClientContext(controller, view);
     clientUser = new ClientUser(controller, view);
+    loginDialog = new LoginDialog(mainFrame);
+   
   }
 
   // Run the GUI client
@@ -75,7 +79,7 @@ public final class ChatSimpleGui {
     mainViewPanel.setBorder(paneBorder());
 
     // Build main panels - Users, Conversations, Messages.
-    final JPanel usersViewPanel = new UserPanel(clientContext, clientUser);
+    final JPanel usersViewPanel = new UserPanel(clientContext, clientUser, loginDialog);
     usersViewPanel.setBorder(paneBorder());
     final GridBagConstraints usersViewC = new GridBagConstraints();
 
