@@ -27,9 +27,7 @@ import codeu.chat.util.Logger;
 public final class ChatSimpleGui {
 
   private final static Logger.Log LOG = Logger.newLog(ChatSimpleGui.class);
-
   private JFrame mainFrame;
-
   private final ClientContext clientContext;
 
   // Constructor - sets up the Chat Application
@@ -39,12 +37,9 @@ public final class ChatSimpleGui {
 
   // Run the GUI client
   public void run() {
-
     try {
-
       initialize();
       mainFrame.setVisible(true);
-
     } catch (Exception ex) {
       System.out.println("ERROR: Exception in ChatSimpleGui.run. Check log for details.");
       LOG.error(ex, "Exception in ChatSimpleGui.run");
@@ -57,24 +52,22 @@ public final class ChatSimpleGui {
     Border inside = BorderFactory.createEmptyBorder(8, 8, 8, 8);
     return BorderFactory.createCompoundBorder(outside, inside);
   }
-  
+
   // Initialize the GUI
   private void initialize() {
-     
-  //Main Page, Outermost frame
-
-  final JPanel welcomeViewPanel = new WelcomePanel(clientContext);
-  welcomeViewPanel.setBorder(paneBorder());
-//  final GridBagConstraints welcomeViewC = new GridBagConstraints();
-
+    // Main Page, Outermost frame
     // NOTE: may have tweak size, or place in scrollable panel.
     mainFrame = new JFrame("Chat");
-    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     mainFrame.setSize(790, 450);
 
     // Main View - outermost graphics panel.
     final JPanel mainViewPanel = new JPanel(new GridBagLayout());
     mainViewPanel.setBorder(paneBorder());
+
+    final WelcomePanel welcomeViewPanel = new WelcomePanel();
+    welcomeViewPanel.setBorder(paneBorder());
+    final GridBagConstraints welcomeViewC = new GridBagConstraints();
 
     // Build main panels - Users, Conversations, Messages.
     final JPanel usersViewPanel = new UserPanel(clientContext);
@@ -113,19 +106,19 @@ public final class ChatSimpleGui {
     messagesViewC.gridheight = 1;
     messagesViewC.fill = GridBagConstraints.BOTH;
     messagesViewC.weighty = 0.7;
-    
+
     mainViewPanel.add(usersViewPanel, usersViewC);
     mainViewPanel.add(conversationsViewPanel, conversationViewC);
     mainViewPanel.add(messagesViewPanel, messagesViewC);
-//  welcomePanel.add(welcomePanel, welcomeViewC);    
+
+    welcomeViewPanel.getStartButton().addActionListener(ae -> {
+      mainFrame.remove(welcomeViewPanel);
+      mainFrame.add(mainViewPanel);
+      mainFrame.pack();
+      mainFrame.setVisible(true);
+    });
 
     mainFrame.add(welcomeViewPanel);
-//  mainFrame.add(mainViewPanel);
-    mainFrame.pack();
-  }
-
-  private void linkPage(){
-    mainFrame.add(mainViewPanel);
     mainFrame.pack();
   }
 }

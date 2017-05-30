@@ -1,51 +1,40 @@
 package codeu.chat.client.simplegui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import codeu.chat.client.ClientContext;
-import codeu.chat.common.User;
-import codeu.chat.client.ChatSimpleGui;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
 // NOTE: JPanel is serializable, but there is no need to serialize UserPanel
 // without the @SuppressWarnings, the compiler will complain of no override for serialVersionUID
 @SuppressWarnings("serial")
 public final class WelcomePanel extends JPanel {
 
-  private final ClientContext clientContext;
+  private JButton startButton;
 
-  public WelcomePanel(ClientContext clientContext) {
+  WelcomePanel() {
     super(new GridBagLayout());
-    this.clientContext = clientContext;
     initialize();
   }
 
   private void initialize() {
-  
-  final JPanel buttonPanel = new JPanel();  
-  final GridBagConstraints buttonPanelC = new GridBagConstraints();
-  final JButton startButton = new JButton("START");
-  buttonPanel.add(startButton);
+    final JPanel buttonPanel = new JPanel();
+    final GridBagConstraints buttonPanelC = new GridBagConstraints();
+    startButton = new JButton("START");
+    buttonPanel.add(startButton);
 
-  buttonPanelC.gridx = 0;
-  buttonPanelC.gridy = 0;
-  buttonPanelC.gridwidth = 10;
-  buttonPanelC.gridheight = 1;
-  buttonPanelC.fill = GridBagConstraints.HORIZONTAL;
-  buttonPanelC.anchor = GridBagConstraints.FIRST_LINE_START;
- 
-  this.add(buttonPanel, buttonPanelC);
-  
-  
-   startButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ChatSimpleGui.this.linkPage();
-      }
-   });
+    buttonPanelC.gridx = 0;
+    buttonPanelC.gridy = 0;
+    buttonPanelC.gridwidth = 10;
+    buttonPanelC.gridheight = 1;
+    buttonPanelC.fill = GridBagConstraints.HORIZONTAL;
+    buttonPanelC.anchor = GridBagConstraints.FIRST_LINE_START;
+
+    this.add(buttonPanel, buttonPanelC);
+    startButton.addActionListener(ae -> System.out.println("Hello world"));
+  }
+
+  public JButton getStartButton() {
+    return startButton;
   }
 }
