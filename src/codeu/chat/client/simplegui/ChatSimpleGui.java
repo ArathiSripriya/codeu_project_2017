@@ -115,7 +115,6 @@ public final class ChatSimpleGui {
       mainFrame.remove(welcomeViewPanel);
       mainFrame.add(mainViewPanel);
       mainFrame.pack();
-      mainFrame.setVisible(true);
     });
 
     mainFrame.add(welcomeViewPanel);
