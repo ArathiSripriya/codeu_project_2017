@@ -2,15 +2,20 @@ package codeu.chat.client.simplegui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.JButton;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 // NOTE: JPanel is serializable, but there is no need to serialize UserPanel
 // without the @SuppressWarnings, the compiler will complain of no override for serialVersionUID
 @SuppressWarnings("serial")
-public final class WelcomePanel extends JPanel {
+final class WelcomePanel extends JPanel {
 
-  private JButton startButton;
+  private JLabel imageLabel;
 
   WelcomePanel() {
     super(new GridBagLayout());
@@ -20,8 +25,14 @@ public final class WelcomePanel extends JPanel {
   private void initialize() {
     final JPanel buttonPanel = new JPanel();
     final GridBagConstraints buttonPanelC = new GridBagConstraints();
-    startButton = new JButton("START");
-    buttonPanel.add(startButton);
+
+    try {
+      BufferedImage img = ImageIO
+          .read(new File("../src/codeu/chat/client/simplegui/Controller.png"));
+      imageLabel = new JLabel(new ImageIcon(img));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
     buttonPanelC.gridx = 0;
     buttonPanelC.gridy = 0;
@@ -31,10 +42,9 @@ public final class WelcomePanel extends JPanel {
     buttonPanelC.anchor = GridBagConstraints.FIRST_LINE_START;
 
     this.add(buttonPanel, buttonPanelC);
-    startButton.addActionListener(ae -> System.out.println("Hello world"));
   }
 
-  public JButton getStartButton() {
-    return startButton;
+  JLabel getImageLabel() {
+    return imageLabel;
   }
 }
