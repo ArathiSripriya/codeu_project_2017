@@ -96,7 +96,7 @@ public final class ClientUser {
       System.out.format("Error: user not created - %s.\n",
           validInputsName && validInputsPass ? "server failure" : "bad input value");
     } else {
-      LOG.info("New user complete, Name= \"%s\" UUID=%s Password= \"%s\"", user.name, user.id, user.password);
+      LOG.info("New user complete, Name= \"%s\" UUID=%s Password= \"saved\"", user.name, user.id);
       updateUsers();
     }
   }
