@@ -156,31 +156,16 @@ public final class UserPanel extends JPanel {
      userSignInButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-       /* final String s = (String) JOptionPane.showInputDialog(
-            UserPanel.this, "Enter user name:", "Continue", JOptionPane.PLAIN_MESSAGE,
-            null, null, "");
 
-	final String p = (String) JOptionPane.showInputDialog(
-            UserPanel.this, "Enter Password:", "Sign-In", JOptionPane.PLAIN_MESSAGE,
-            null, null, "");
-*/
 	Login login = new Login(clientUser);
 	loginDialog.setVisible(true);
 
         final String s = loginDialog.getUsername();
 	final String p = loginDialog.getPassword();
 
-	//System.out.println("Input Username is " + s);
-	//System.out.println("Input Password is " + p);
-
 	final User u = clientUser.searchByName(s);
 
-	//System.out.println("Real user is " + u.name);
-	//System.out.println("Real pass is " + u.password);
-
 	if(u != null){
-	    //Login login = new Login(u);
-	    //loginDialog.setVisible(true);
 	
 	  if((p.equals(u.password))){
 	      clientContext.user.signInUser(s,p);
@@ -191,35 +176,6 @@ public final class UserPanel extends JPanel {
 	} 
       }
     });
-
-
-
-    /*userSignInButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (userList.getSelectedIndex() != -1) {
-          final String username = userList.getSelectedValue();
-          	clientContext.user.signInUser(username, username);
-         	userSignedInLabel.setText("Hello " + username);
-          }	
-        }
-      });
-	
-
-	//now get the password
-	  userSignInButton.addActionListener(new ActionListener() {
-	    @Override
-	    public void actionPerformed(Action Event e) {
-		if(passwordList.getSelectedIndex() != -1) {
-		final String password = passwordList.getSelectedValue();
-		//sign-in credentials recieved		
-          	clientContext.user.signInUser(username, password);
-         	userSignedInLabel.setText("Hello " + data);
-        	}
-              }
-    	    }); */
-
-
 
     userAddButton.addActionListener(new ActionListener() {
       @Override
