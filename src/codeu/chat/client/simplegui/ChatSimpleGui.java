@@ -23,8 +23,14 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
@@ -60,7 +66,7 @@ public final class ChatSimpleGui {
   }
 
   // Initialize the GUI
-  private void initialize() {
+  private void initialize() throws IOException {
     // Main Page, Outermost frame
     // NOTE: may have tweak size, or place in scrollable panel.
     mainFrame = new JFrame("Chat");
@@ -71,9 +77,8 @@ public final class ChatSimpleGui {
     final JPanel mainViewPanel = new JPanel(new GridBagLayout());
     mainViewPanel.setBorder(paneBorder());
 
-    final WelcomePanel welcomeViewPanel = new WelcomePanel();
-    welcomeViewPanel.setBorder(paneBorder());
-    final GridBagConstraints welcomeViewC = new GridBagConstraints();
+    final JLabel landingImage;
+    landingImage = buildLandingImage();
 
     // Build main panels - Users, Conversations, Messages.
     final JPanel usersViewPanel = new UserPanel(clientContext);
@@ -117,18 +122,22 @@ public final class ChatSimpleGui {
     mainViewPanel.add(conversationsViewPanel, conversationViewC);
     mainViewPanel.add(messagesViewPanel, messagesViewC);
 
-    welcomeViewPanel.getImageLabel().addMouseListener(new MouseAdapter() {
+    landingImage.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        welcomeViewPanel.remove(welcomeViewPanel.getImageLabel());
-        mainFrame.remove(welcomeViewPanel);
+        mainFrame.remove(landingImage);
         mainFrame.add(mainViewPanel);
         mainFrame.pack();
       }
     });
 
-    mainFrame.add(welcomeViewPanel);
-    mainFrame.setContentPane(welcomeViewPanel.getImageLabel());
+    mainFrame.add(landingImage);
     mainFrame.setSize(371, 480);
+  }
+
+ private JLabel buildLandingImage() throws IOException {
+    BufferedImage img = ImageIO
+        .read(new File("../src/codeu/chat/client/simplegui/Controller.png"));
+    return new JLabel(new ImageIcon(img));
   }
 }
