@@ -228,7 +228,6 @@ public final class Chat {
   private void showCurrent() {
     boolean displayed = false;
     if (clientContext.user.hasCurrent()) {
-      //System.out.println("User:");
       clientContext.user.showCurrent();
       System.out.println();
       displayed = true;
