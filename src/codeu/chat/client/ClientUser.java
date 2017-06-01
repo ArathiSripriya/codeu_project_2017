@@ -68,7 +68,7 @@ public final class ClientUser {
     if (name != null) {
       final User newCurrent = usersByName.first(name);
 
-      if ((newCurrent != null) && (password.equals(newCurrent.password))) {
+      if (newCurrent != null && password.equals(newCurrent.password)) {
         current = newCurrent;
       }
     }
