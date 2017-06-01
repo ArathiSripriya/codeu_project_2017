@@ -23,6 +23,9 @@ import javax.swing.event.ListSelectionListener;
 
 import codeu.chat.client.ClientContext;
 import codeu.chat.common.User;
+import codeu.chat.client.ClientUser;
+import codeu.chat.client.LoginDialog;
+import codeu.chat.client.Login;
 
 // NOTE: JPanel is serializable, but there is no need to serialize UserPanel
 // without the @SuppressWarnings, the compiler will complain of no override for serialVersionUID
@@ -30,10 +33,14 @@ import codeu.chat.common.User;
 public final class UserPanel extends JPanel {
 
   private final ClientContext clientContext;
+  private final ClientUser clientUser;
+  private final LoginDialog loginDialog;
 
-  public UserPanel(ClientContext clientContext) {
+  public UserPanel(ClientContext clientContext, ClientUser clientUser, LoginDialog loginDialog) {
     super(new GridBagLayout());
     this.clientContext = clientContext;
+    this.clientUser = clientUser;
+    this.loginDialog = loginDialog;
     initialize();
   }
 
@@ -144,16 +151,29 @@ public final class UserPanel extends JPanel {
       public void actionPerformed(ActionEvent e) {
         UserPanel.this.getAllUsers(listModel);
       }
-    });
+    });   
 
-    userSignInButton.addActionListener(new ActionListener() {
+     userSignInButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        if (userList.getSelectedIndex() != -1) {
-          final String data = userList.getSelectedValue();
-          clientContext.user.signInUser(data);
-          userSignedInLabel.setText("Hello " + data);
-        }
+
+	Login login = new Login(clientUser);
+	loginDialog.setVisible(true);
+
+        final String s = loginDialog.getUsername();
+	final String p = loginDialog.getPassword();
+
+	final User u = clientUser.searchByName(s);
+
+	if(u != null){
+	
+	  if((p.equals(u.password))){
+	      clientContext.user.signInUser(s,p);
+	      userSignedInLabel.setText("Hello " + s);
+	  }
+	}else{
+	  userSignedInLabel.setText("Unrecognized user/pass");
+	} 
       }
     });
 
@@ -163,8 +183,13 @@ public final class UserPanel extends JPanel {
         final String s = (String) JOptionPane.showInputDialog(
             UserPanel.this, "Enter user name:", "Add User", JOptionPane.PLAIN_MESSAGE,
             null, null, "");
-        if (s != null && s.length() > 0) {
-          clientContext.user.addUser(s);
+
+	final String p = (String) JOptionPane.showInputDialog(
+            UserPanel.this, "Enter Password:", "Add Password", JOptionPane.PLAIN_MESSAGE,
+            null, null, "");
+
+        if ((s != null && s.length() > 0) && (p != null && p.length() > 0)) {
+          clientContext.user.addUser(s, p);
           UserPanel.this.getAllUsers(listModel);
         }
       }
