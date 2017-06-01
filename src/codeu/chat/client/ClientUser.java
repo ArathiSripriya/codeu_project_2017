@@ -49,11 +49,7 @@ public final class ClientUser {
     boolean clean = true;
     if (userName.length() == 0) {
       clean = false;
-    } else {
-
-      // TODO: check for invalid characters
-
-    }
+    } 
     return clean;
   }
 
@@ -93,14 +89,12 @@ public final class ClientUser {
     
     final boolean validInputsName = isValidName(name);
     final boolean validInputsPass = isValidName(password);
-    //TODO: Write isValidPassword(String password); method
-    //validInputs = isValidPassword(password);
 
-    final User user = (validInputsName && validInputsPass) ? controller.newUser(name, password) : null;
+    final User user = validInputsName && validInputsPass ? controller.newUser(name, password) : null;
 
     if (user == null) {
       System.out.format("Error: user not created - %s.\n",
-          (validInputsName && validInputsPass) ? "server failure" : "bad input value");
+          validInputsName && validInputsPass ? "server failure" : "bad input value");
     } else {
       LOG.info("New user complete, Name= \"%s\" UUID=%s Password= \"%s\"", user.name, user.id, user.password);
       updateUsers();
