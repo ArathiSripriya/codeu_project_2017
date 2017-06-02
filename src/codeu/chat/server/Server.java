@@ -37,6 +37,13 @@ import codeu.chat.util.Timeline;
 import codeu.chat.util.Uuid;
 import codeu.chat.util.connections.Connection;
 
+//Used to create stopwatch for profiling
+package com.google.common.base;
+org.apache.commons.lang.time.StopWatch;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.HOURS;
+
 public final class Server {
 
   private static final Logger.Log LOG = Logger.newLog(Server.class);
@@ -44,6 +51,8 @@ public final class Server {
   private static final int RELAY_REFRESH_MS = 5000;  // 5 seconds
 
   private final Timeline timeline = new Timeline();
+
+  private final Stopwatch stopwatch = new Stopwatch();
 
   private final Uuid id;
   private final byte[] secret;
@@ -62,12 +71,12 @@ public final class Server {
 
     this.controller = new Controller(id, model);
     this.relay = relay;
-
+     
+    //logs info about server's status
     timeline.scheduleNow(new Runnable() {
       @Override
       public void run() {
         try {
-
           LOG.info("Reading update from relay...");
 
           for (final Relay.Bundle bundle : relay.read(id, secret, lastSeen, 32)) {
@@ -84,6 +93,19 @@ public final class Server {
         timeline.scheduleIn(RELAY_REFRESH_MS, this);
       }
     });
+  }
+
+  //Profiles runtime of the server
+  public void profileServer(){
+    timeline.scheduleNow(new Runnable() {
+      @Override
+      public void run() {
+         try {
+	     stopwatch.start();
+	 } if (!stopwatch.isRunning) {
+	     System.out.println(stopwatch.toString());
+	  }
+      }
   }
 
   public void handleConnection(final Connection connection) {
